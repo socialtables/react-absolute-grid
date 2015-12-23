@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import BaseDisplayObject from '../lib/BaseDisplayObject.jsx';
+import BaseDisplayObject from '../src/BaseDisplayObject.js';
 
 export default class SampleDisplay extends BaseDisplayObject{
 

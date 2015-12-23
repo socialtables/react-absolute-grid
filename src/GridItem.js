@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import BaseDisplayObject from './BaseDisplayObject.jsx';
+import BaseDisplayObject from './BaseDisplayObject.js';
 
 export default class GridItem extends BaseDisplayObject{
 
