@@ -1,0 +1,11 @@
+node_modules/
+
+demo/
+demo.js
+
+webpack/
+
+.idea
+.babelrc
+.editorconfig
+.eslintrc
