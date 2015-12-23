@@ -2,8 +2,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AbsoluteGrid from './index.js';
-import SampleDisplay from './demo/SampleDisplay.jsx';
+import AbsoluteGrid from './src/AbsoluteGrid.js';
+import SampleDisplay from './demo/SampleDisplay.js';
 import * as data from './demo/sampleData.js';
 import * as _ from 'lodash';
 

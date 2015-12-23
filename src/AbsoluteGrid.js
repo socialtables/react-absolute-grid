@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import GridItem from './GridItem.jsx';
+import GridItem from './GridItem.js';
 import LayoutManager from './LayoutManager.js';
 import DragManager from './DragManager.js';
 import debounce from 'lodash.debounce';

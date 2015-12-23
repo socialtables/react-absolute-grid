@@ -8,7 +8,7 @@ Usage:
 Install with `npm install react-absolute-grid`
 
     import React from 'react';
-    import AbsoluteGrid from './lib/AbsoluteGrid.jsx';
+    import AbsoluteGrid from '@socialtables/react-absolute-grid';
 
      var sampleItems = [
       {key: 1, name: 'Test', sort: 0, filtered: 0},
@@ -44,7 +44,7 @@ Display objects will receive item, style, and index as properties. You must appl
     'use strict';
 
     import React from 'react';
-    import BaseDisplayObject from '../lib/BaseDisplayObject.jsx';
+    import BaseDisplayObject from '@socialtables/react-absolute-grid/lib/BaseDisplayObject.js';
 
     export default class SampleDisplay extends BaseDisplayObject{
 
