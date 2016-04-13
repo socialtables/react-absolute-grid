@@ -16,10 +16,15 @@ export default class AbsoluteGrid extends React.Component {
     super(props);
     this.running = false;
     this.onResize = debounce(this.onResize, 150);
+    this.createGrid = this.createGrid.bind(this);
     this.dragManager = new DragManager(this.props.onMove, this.props.keyProp);
     this.state = {
       layoutWidth: 0,
-      dragItemId: 0
+      dragItemId: 0,
+      initialScrollPosition: props.scrollPosition,
+      itemsAlreadyLoaded: {},
+      gridItems: [],
+      totalHeight: 0
     };
   }
 
@@ -28,66 +33,13 @@ export default class AbsoluteGrid extends React.Component {
       return <div />;
     }
 
-    var options = {
-      itemWidth: this.props.itemWidth,
-      itemHeight: this.props.itemHeight,
-      verticalMargin: this.props.verticalMargin,
-      zoom: this.props.zoom
-    };
-    const itemTotalHeight = this.props.itemHeight + this.props.verticalMargin;
-    const bufferHeight = this.props.bufferRows * itemTotalHeight;
-
-    var layout = new LayoutManager(options, this.state.layoutWidth);
-
-    var filteredIndex = 0;
-    var sortedIndex = {};
-
-    /*
-     If we actually sorted the array, React would re-render the DOM nodes
-     Creating a sort index just tells us where each item should be
-     This also clears out filtered items from the sort order and
-     eliminates gaps and duplicate sorts
-     */
-    sortBy(this.props.items, this.props.sortProp).forEach((item) => {
-      if(!item[this.props.filterProp]){
-        var key = item[this.props.keyProp];
-        sortedIndex[key] = filteredIndex;
-        filteredIndex++;
-      }
-    });
-    var gridItems = this.props.items.map((item) => {
-      var key = item[this.props.keyProp];
-      var index = sortedIndex[key];
-      if (this.props.lazyLoad) {
-        const pixelPosition = layout.getPosition(index).y;
-        const scrollMinusPixelPos = this.props.scrollPosition - pixelPosition;
-        const pixelMinusScrollPos = pixelPosition - this.props.scrollPosition;
-        const shouldLoadAbove = (bufferHeight >= scrollMinusPixelPos) && scrollMinusPixelPos >= 0;
-        const shouldLoadBelow = (bufferHeight >=  pixelMinusScrollPos) && pixelMinusScrollPos >= 0;
-
-        if (!shouldLoadAbove && !shouldLoadBelow) {
-          const emptyStyle = Object.assign({}, this.props.emptyItemStyle, layout.getEmptyStyle(index));
-          return <div key={key} style={emptyStyle} />;
-        }
-      }
-      var style = layout.getStyle(index, this.props.animation, item[this.props.filterProp]);
-      var gridItem = React.cloneElement(this.props.displayObject, {
-        ...this.props.displayObject.props, style, item, index, key,
-        itemsLength: this.props.items.length,
-        dragEnabled: this.props.dragEnabled,
-        dragManager: this.dragManager
-      });
-
-      return gridItem;
-    });
-
     var gridStyle = {
       position: 'relative',
       display: 'block',
-      height: layout.getTotalHeight(filteredIndex)
+      height: this.state.totalHeight
     };
 
-    return <div style={gridStyle} className="absoluteGrid">{gridItems}</div>;
+    return <div style={gridStyle} className="absoluteGrid">{this.state.gridItems}</div>;
   }
 
   componentDidMount() {
@@ -96,6 +48,73 @@ export default class AbsoluteGrid extends React.Component {
       window.addEventListener('resize', this.onResize);
     }
     this.onResize();
+    this.createGrid(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.scrollPosition !== nextProps.scrollPosition || this.props.items.length !== nextProps.items.length) {
+      this.createGrid(nextProps);
+    }
+  }
+
+  createGrid(props) {
+    var options = {
+      itemWidth: props.itemWidth,
+      itemHeight: props.itemHeight,
+      verticalMargin: props.verticalMargin,
+      zoom: props.zoom
+    };
+    const itemTotalHeight = props.itemHeight + props.verticalMargin;
+    const bufferHeight = props.bufferRows * itemTotalHeight;
+    var layout = new LayoutManager(options, (this.state.layoutWidth || this.getDOMWidth()));
+
+    var filteredIndex = 0;
+    var sortedIndex = {};
+    let itemsAlreadyLoaded = this.state.itemsAlreadyLoaded;
+    /*
+     If we actually sorted the array, React would re-render the DOM nodes
+     Creating a sort index just tells us where each item should be
+     This also clears out filtered items from the sort order and
+     eliminates gaps and duplicate sorts
+     */
+    sortBy(props.items, props.sortProp).forEach((item) => {
+      if(!item[props.filterProp]){
+        var key = item[props.keyProp];
+        sortedIndex[key] = filteredIndex;
+        filteredIndex++;
+      }
+    });
+    var gridItems = props.items.map((item) => {
+      var key = item[props.keyProp];
+      var index = sortedIndex[key];
+      if (props.lazyLoad) {
+        const pixelPosition = layout.getPosition(index).y;
+        const scrollMinusPixelPos = props.scrollPosition - pixelPosition;
+        const pixelMinusScrollPos = pixelPosition - props.scrollPosition;
+        const shouldLoadAbove = (bufferHeight >= scrollMinusPixelPos) && scrollMinusPixelPos >= 0;
+        const shouldLoadBelow = (bufferHeight >=  pixelMinusScrollPos) && pixelMinusScrollPos >= 0;
+        if (!shouldLoadAbove && !shouldLoadBelow && !itemsAlreadyLoaded[key]) {
+          const emptyStyle = Object.assign({}, props.emptyItemStyle, layout.getEmptyStyle(index));
+          return <div key={key} style={emptyStyle} />;
+        }
+      }
+      var style = layout.getStyle(index, props.animation, item[props.filterProp]);
+      var gridItem = React.cloneElement(props.displayObject, {
+        ...props.displayObject.props, style, item, index, key,
+        itemsLength: props.items.length,
+        dragEnabled: props.dragEnabled,
+        dragManager: this.dragManager
+      });
+      if (!itemsAlreadyLoaded[key]) {
+        itemsAlreadyLoaded[key] = key;
+      }
+      return gridItem;
+    });
+    this.setState({
+      itemsAlreadyLoaded,
+      gridItems,
+      totalHeight: layout.getTotalHeight(filteredIndex)
+    });
   }
 
   componentWillUnmount() {
@@ -120,6 +139,7 @@ export default class AbsoluteGrid extends React.Component {
     if(this.state.layoutWidth !== width){
       this.setState({layoutWidth: width});
     }
+    return width;
     this.running = false;
   };
 }
