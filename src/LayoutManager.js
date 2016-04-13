@@ -82,12 +82,14 @@ export default class LayoutManager {
   }
 
   getEmptyStyle(index) {
+    var transform = this.getTransform(index);
     return {
       width: `${this.itemWidth}px`,
       height: `${this.itemHeight}px`,
       position: 'absolute',
       boxSizing: 'border-box',
-      display: 'block'
+      display: 'block',
+      transform
     }
   }
 }

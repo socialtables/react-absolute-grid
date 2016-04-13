@@ -34,6 +34,8 @@ export default class AbsoluteGrid extends React.Component {
       verticalMargin: this.props.verticalMargin,
       zoom: this.props.zoom
     };
+    const itemTotalHeight = this.props.itemHeight + this.props.verticalMargin;
+    const bufferHeight = this.props.bufferRows * itemTotalHeight;
 
     var layout = new LayoutManager(options, this.state.layoutWidth);
 
@@ -53,7 +55,6 @@ export default class AbsoluteGrid extends React.Component {
         filteredIndex++;
       }
     });
-
     var gridItems = this.props.items.map((item) => {
       var key = item[this.props.keyProp];
       var index = sortedIndex[key];
@@ -61,11 +62,12 @@ export default class AbsoluteGrid extends React.Component {
         const pixelPosition = layout.getPosition(index).y;
         const scrollMinusPixelPos = this.props.scrollPosition - pixelPosition;
         const pixelMinusScrollPos = pixelPosition - this.props.scrollPosition;
-        const shouldLoadAbove = (this.props.loadHeight >= scrollMinusPixelPos) && scrollMinusPixelPos >= 0;
-        const shouldLoadBelow = (this.props.loadHeight >=  pixelMinusScrollPos) && pixelMinusScrollPos >= 0;
+        const shouldLoadAbove = (bufferHeight >= scrollMinusPixelPos) && scrollMinusPixelPos >= 0;
+        const shouldLoadBelow = (bufferHeight >=  pixelMinusScrollPos) && pixelMinusScrollPos >= 0;
 
         if (!shouldLoadAbove && !shouldLoadBelow) {
-          return <div key={key} style={layout.getEmptyStyle()} />;
+          const emptyStyle = Object.assign({}, this.props.emptyItemStyle, layout.getEmptyStyle(index));
+          return <div key={key} style={emptyStyle} />;
         }
       }
       var style = layout.getStyle(index, this.props.animation, item[this.props.filterProp]);
@@ -136,9 +138,10 @@ AbsoluteGrid.propTypes = {
   filterProp: React.PropTypes.string,
   animation: React.PropTypes.string,
   onMove: React.PropTypes.func,
-  loadHeight: React.PropTypes.number,
+  bufferRows: React.PropTypes.number,
   scrollPosition: React.PropTypes.number,
-  lazyLoad: React.PropTypes.bool
+  lazyLoad: React.PropTypes.bool,
+  emptyItemStyle: React.PropTypes.object
 };
 
 AbsoluteGrid.defaultProps = {
@@ -152,8 +155,9 @@ AbsoluteGrid.defaultProps = {
   verticalMargin: -1,
   responsive: false,
   dragEnabled: false,
-  loadHeight: 1000,
+  bufferRows: 4,
   lazyLoad: false,
+  emptyItemStyle: {},
   animation: 'transform 300ms ease',
   zoom: 1,
   onMove: function(){}
