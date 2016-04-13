@@ -25,7 +25,7 @@ export default class AbsoluteGrid extends React.Component {
 
   render() {
     if(!this.state.layoutWidth || !this.props.items.length){
-      return <div></div>;
+      return <div />;
     }
 
     var options = {
@@ -57,8 +57,18 @@ export default class AbsoluteGrid extends React.Component {
     var gridItems = this.props.items.map((item) => {
       var key = item[this.props.keyProp];
       var index = sortedIndex[key];
-      var style = layout.getStyle(index, this.props.animation, item[this.props.filterProp]);
+      if (this.props.lazyLoad) {
+        const pixelPosition = layout.getPosition(index).y;
+        const scrollMinusPixelPos = this.props.scrollPosition - pixelPosition;
+        const pixelMinusScrollPos = pixelPosition - this.props.scrollPosition;
+        const shouldLoadAbove = (this.props.loadHeight >= scrollMinusPixelPos) && scrollMinusPixelPos >= 0;
+        const shouldLoadBelow = (this.props.loadHeight >=  pixelMinusScrollPos) && pixelMinusScrollPos >= 0;
 
+        if (!shouldLoadAbove && !shouldLoadBelow) {
+          return <div key={key} style={layout.getEmptyStyle()} />;
+        }
+      }
+      var style = layout.getStyle(index, this.props.animation, item[this.props.filterProp]);
       var gridItem = React.cloneElement(this.props.displayObject, {
         ...this.props.displayObject.props, style, item, index, key,
         itemsLength: this.props.items.length,
@@ -105,7 +115,6 @@ export default class AbsoluteGrid extends React.Component {
 
   getDOMWidth = () => {
     var width = ReactDOM.findDOMNode(this).clientWidth;
-
     if(this.state.layoutWidth !== width){
       this.setState({layoutWidth: width});
     }
@@ -126,7 +135,10 @@ AbsoluteGrid.propTypes = {
   sortProp: React.PropTypes.string,
   filterProp: React.PropTypes.string,
   animation: React.PropTypes.string,
-  onMove: React.PropTypes.func
+  onMove: React.PropTypes.func,
+  loadHeight: React.PropTypes.number,
+  scrollPosition: React.PropTypes.number,
+  lazyLoad: React.PropTypes.bool
 };
 
 AbsoluteGrid.defaultProps = {
@@ -140,6 +152,8 @@ AbsoluteGrid.defaultProps = {
   verticalMargin: -1,
   responsive: false,
   dragEnabled: false,
+  loadHeight: 1000,
+  lazyLoad: false,
   animation: 'transform 300ms ease',
   zoom: 1,
   onMove: function(){}
