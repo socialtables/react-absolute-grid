@@ -95,7 +95,12 @@ export default class AbsoluteGrid extends React.Component {
         const shouldLoadBelow = (bufferHeight >=  pixelMinusScrollPos) && pixelMinusScrollPos >= 0;
         if (!shouldLoadAbove && !shouldLoadBelow && !itemsAlreadyLoaded[key]) {
           const emptyStyle = Object.assign({}, props.emptyItemStyle, layout.getEmptyStyle(index));
-          return <div key={key} style={emptyStyle} />;
+          return React.cloneElement(props.lazyObject, {
+            key,
+            index,
+            style: emptyStyle,
+            itemsLength: props.items.length,
+          });
         }
       }
       var style = layout.getStyle(index, props.animation, item[props.filterProp]);
@@ -147,6 +152,7 @@ export default class AbsoluteGrid extends React.Component {
 AbsoluteGrid.propTypes = {
   items: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
   displayObject: React.PropTypes.object,
+  lazyObject: React.PropTypes.object,
   itemWidth: React.PropTypes.number,
   itemHeight: React.PropTypes.number,
   verticalMargin: React.PropTypes.number,
@@ -167,6 +173,7 @@ AbsoluteGrid.propTypes = {
 AbsoluteGrid.defaultProps = {
   items: [],
   displayObject: <GridItem/>,
+  lazyObject: <div />,
   keyProp: 'key',
   filterProp: 'filtered',
   sortProp: 'sort',
