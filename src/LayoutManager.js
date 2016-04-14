@@ -80,4 +80,16 @@ export default class LayoutManager {
 
     return style;
   }
+
+  getEmptyStyle(index) {
+    var transform = this.getTransform(index);
+    return {
+      width: `${this.itemWidth}px`,
+      height: `${this.itemHeight}px`,
+      position: 'absolute',
+      boxSizing: 'border-box',
+      display: 'block',
+      transform
+    }
+  }
 }
