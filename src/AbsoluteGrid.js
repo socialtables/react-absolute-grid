@@ -137,10 +137,10 @@ export default class AbsoluteGrid extends React.Component {
   getDOMWidth = () => {
     var width = ReactDOM.findDOMNode(this).clientWidth;
     if(this.state.layoutWidth !== width){
-      this.setState({layoutWidth: width});
+      this.setState({layoutWidth: width}, () => this.createGrid(this.props));
     }
-    return width;
     this.running = false;
+    return width;
   };
 }
 
