@@ -93,7 +93,7 @@ export default class AbsoluteGrid extends React.Component {
         const pixelMinusScrollPos = pixelPosition - props.scrollPosition;
         const shouldLoadAbove = (bufferHeight >= scrollMinusPixelPos) && scrollMinusPixelPos >= 0;
         const shouldLoadBelow = (bufferHeight >=  pixelMinusScrollPos) && pixelMinusScrollPos >= 0;
-        if (!shouldLoadAbove && !shouldLoadBelow && (!itemsAlreadyLoaded[key] || props.unMountOffScreen)) {
+        if (!shouldLoadAbove && !shouldLoadBelow && (!itemsAlreadyLoaded[key] || props.unmountOffScreen)) {
           const emptyStyle = Object.assign({}, props.emptyItemStyle, layout.getEmptyStyle(index));
           return React.cloneElement(props.lazyObject, {
             key,
@@ -167,7 +167,7 @@ AbsoluteGrid.propTypes = {
   bufferRows: React.PropTypes.number,
   scrollPosition: React.PropTypes.number,
   lazyLoad: React.PropTypes.bool,
-  unMountOffScreen: React.PropTypes.bool,
+  unmountOffScreen: React.PropTypes.bool,
   emptyItemStyle: React.PropTypes.object
 };
 
@@ -185,7 +185,7 @@ AbsoluteGrid.defaultProps = {
   dragEnabled: false,
   bufferRows: 4,
   lazyLoad: false,
-  unMountOffScreen: false,
+  unmountOffScreen: false,
   emptyItemStyle: {},
   animation: 'transform 300ms ease',
   zoom: 1,
