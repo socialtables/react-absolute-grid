@@ -52,7 +52,7 @@ export default class AbsoluteGrid extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.scrollPosition !== nextProps.scrollPosition || this.props.items.length !== nextProps.items.length) {
+    if (this.props.scrollPosition !== nextProps.scrollPosition || this.props.items !== nextProps.items) {
       this.createGrid(nextProps);
     }
   }
