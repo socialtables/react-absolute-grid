@@ -36,6 +36,10 @@ Options (Properties)
 | **animation** | 'transform 300ms ease' | The CSS animation to use on elements. Pass a blank string or `false` for no animation. |
 | **zoom** | 1 | Zooms the contents of the grid, 1 = 100% |
 | **onMove** | `fn(from, to)` | This function is called when an item is dragged over another item. It is your responsibility to update the sort of all items when this happens. |
+| **lazyLoad** | false | whether elements should render the full component lazily.
+| **bufferRows** | 4 | number of extra rows to render ahead of and behind what is visible in the viewport. only applied if lazyLoad is true
+| **unmountOffScreen** | false | whether or not lazily loaded elements should be unmounted from the DOM when they are no longer in the viewport. only applies if lazyLoad is true
+| ** emptyItemStyle** | {} | style to apply to item not in viewport.
 
 Creating a DisplayObject component
 ------
