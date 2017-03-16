@@ -39,7 +39,7 @@ Options (Properties)
 | **lazyLoad** | false | whether elements should render the full component lazily.
 | **bufferRows** | 4 | number of extra rows to render ahead of and behind what is visible in the viewport. only applied if lazyLoad is true
 | **unmountOffScreen** | false | whether or not lazily loaded elements should be unmounted from the DOM when they are no longer in the viewport. only applies if lazyLoad is true
-| ** emptyItemStyle** | {} | style to apply to item not in viewport.
+| **emptyItemStyle** | {} | style to apply to item not in viewport.
 
 Creating a DisplayObject component
 ------
