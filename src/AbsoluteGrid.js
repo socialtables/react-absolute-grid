@@ -66,6 +66,8 @@ export default class AbsoluteGrid extends React.Component {
     };
     const itemTotalHeight = props.itemHeight + props.verticalMargin;
     const bufferHeight = props.bufferRows * itemTotalHeight;
+    const renderStart = props.scrollPosition - bufferHeight;
+    const renderEnd = props.containerHeight + props.scrollPosition + bufferHeight;
     var layout = new LayoutManager(options, (this.state.layoutWidth || this.getDOMWidth()));
 
     var filteredIndex = 0;
@@ -89,11 +91,8 @@ export default class AbsoluteGrid extends React.Component {
       var index = sortedIndex[key];
       if (props.lazyLoad) {
         const pixelPosition = layout.getPosition(index).y;
-        const scrollMinusPixelPos = props.scrollPosition - pixelPosition;
-        const pixelMinusScrollPos = pixelPosition - props.scrollPosition;
-        const shouldLoadAbove = (bufferHeight >= scrollMinusPixelPos) && scrollMinusPixelPos >= 0;
-        const shouldLoadBelow = (bufferHeight >=  pixelMinusScrollPos) && pixelMinusScrollPos >= 0;
-        if (!shouldLoadAbove && !shouldLoadBelow && (!itemsAlreadyLoaded[key] || props.unmountOffScreen)) {
+        const shouldShow = pixelPosition >= renderStart && pixelPosition <= renderEnd; 
+        if (!shouldShow && (!itemsAlreadyLoaded[key] || props.unmountOffScreen)) {
           const emptyStyle = Object.assign({}, props.emptyItemStyle, layout.getEmptyStyle(index));
           return React.cloneElement(props.lazyObject, {
             key,
@@ -189,5 +188,6 @@ AbsoluteGrid.defaultProps = {
   emptyItemStyle: {},
   animation: 'transform 300ms ease',
   zoom: 1,
+  containerHeight: 0,
   onMove: function(){}
 };
