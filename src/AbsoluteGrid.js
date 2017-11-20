@@ -1,5 +1,7 @@
 'use strict';
 
+import PropTypes from 'prop-types';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import GridItem from './GridItem.js';
@@ -149,25 +151,25 @@ export default class AbsoluteGrid extends React.Component {
 }
 
 AbsoluteGrid.propTypes = {
-  items: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-  displayObject: React.PropTypes.object,
-  lazyObject: React.PropTypes.object,
-  itemWidth: React.PropTypes.number,
-  itemHeight: React.PropTypes.number,
-  verticalMargin: React.PropTypes.number,
-  zoom: React.PropTypes.number,
-  responsive: React.PropTypes.bool,
-  dragEnabled: React.PropTypes.bool,
-  keyProp: React.PropTypes.string,
-  sortProp: React.PropTypes.string,
-  filterProp: React.PropTypes.string,
-  animation: React.PropTypes.string,
-  onMove: React.PropTypes.func,
-  bufferRows: React.PropTypes.number,
-  scrollPosition: React.PropTypes.number,
-  lazyLoad: React.PropTypes.bool,
-  unmountOffScreen: React.PropTypes.bool,
-  emptyItemStyle: React.PropTypes.object
+  items: PropTypes.arrayOf(PropTypes.object).isRequired,
+  displayObject: PropTypes.object,
+  lazyObject: PropTypes.object,
+  itemWidth: PropTypes.number,
+  itemHeight: PropTypes.number,
+  verticalMargin: PropTypes.number,
+  zoom: PropTypes.number,
+  responsive: PropTypes.bool,
+  dragEnabled: PropTypes.bool,
+  keyProp: PropTypes.string,
+  sortProp: PropTypes.string,
+  filterProp: PropTypes.string,
+  animation: PropTypes.string,
+  onMove: PropTypes.func,
+  bufferRows: PropTypes.number,
+  scrollPosition: PropTypes.number,
+  lazyLoad: PropTypes.bool,
+  unmountOffScreen: PropTypes.bool,
+  emptyItemStyle: PropTypes.object
 };
 
 AbsoluteGrid.defaultProps = {

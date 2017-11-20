@@ -1,5 +1,7 @@
 'use strict';
 
+import PropTypes from 'prop-types';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -65,9 +67,9 @@ export default class BaseDisplayObject extends React.Component {
 }
 
 BaseDisplayObject.propTypes = {
-  item: React.PropTypes.object,
-  style: React.PropTypes.object,
-  index: React.PropTypes.number,
-  dragEnabled: React.PropTypes.bool,
-  dragManager: React.PropTypes.object
+  item: PropTypes.object,
+  style: PropTypes.object,
+  index: PropTypes.number,
+  dragEnabled: PropTypes.bool,
+  dragManager: PropTypes.object
 };
